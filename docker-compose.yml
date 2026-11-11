@@ -1,0 +1,43 @@
+name: campus-presence
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: campus_presence
+      POSTGRES_USER: campus
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-campus}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U campus -d campus_presence"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    ports:
+      - "5432:5432"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      POSTGRES_URL: jdbc:postgresql://postgres:5432/campus_presence
+      POSTGRES_USER: campus
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-campus}
+      APP_JWT_SECRET: ${APP_JWT_SECRET:-change-this-production-secret-to-a-long-random-value-2026}
+      APP_SEED_DEMO: ${APP_SEED_DEMO:-true}
+      APP_STORAGE_LOCATION: /app/uploads
+      APP_CORS_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
+    volumes:
+      - uploads:/app/uploads
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:
+  uploads:

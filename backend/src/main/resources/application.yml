@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: campus-presence
+  profiles:
+    default: dev
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: ${SERVER_PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET:campus-presence-dev-secret-key-change-me-in-production-2026-very-long}
+    expiration-ms: ${APP_JWT_EXPIRATION_MS:28800000}
+  cors:
+    allowed-origins: ${APP_CORS_ORIGINS:http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173}
+  storage:
+    location: ${APP_STORAGE_LOCATION:./uploads}
+  seed-demo: ${APP_SEED_DEMO:true}

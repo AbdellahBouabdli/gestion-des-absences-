@@ -1,0 +1,101 @@
+{
+  "pages": [
+    {
+      "name": "01-login",
+      "url": "http://localhost:5173/login",
+      "horizontalOverflow": false
+    },
+    {
+      "name": "02-teacher-dashboard",
+      "url": "http://localhost:5173/teacher",
+      "horizontalOverflow": false
+    },
+    {
+      "name": "03-teacher-absences",
+      "url": "http://localhost:5173/teacher/absences",
+      "horizontalOverflow": false
+    },
+    {
+      "name": "04-teacher-absence-dialog",
+      "url": "http://localhost:5173/teacher/absences",
+      "horizontalOverflow": false
+    },
+    {
+      "name": "05-teacher-justifications",
+      "url": "http://localhost:5173/teacher/justifications",
+      "horizontalOverflow": false
+    },
+    {
+      "name": "06-teacher-students",
+      "url": "http://localhost:5173/teacher/students",
+      "horizontalOverflow": false
+    },
+    {
+      "name": "07-teacher-stats",
+      "url": "http://localhost:5173/teacher/stats",
+      "horizontalOverflow": false
+    },
+    {
+      "name": "08-student-dashboard",
+      "url": "http://localhost:5173/student",
+      "horizontalOverflow": false
+    },
+    {
+      "name": "09-student-absences",
+      "url": "http://localhost:5173/student/absences",
+      "horizontalOverflow": false
+    },
+    {
+      "name": "10-student-absence-detail",
+      "url": "http://localhost:5173/student/absences",
+      "horizontalOverflow": false
+    },
+    {
+      "name": "11-student-schedule",
+      "url": "http://localhost:5173/student/schedule",
+      "horizontalOverflow": false
+    },
+    {
+      "name": "12-student-justifications",
+      "url": "http://localhost:5173/student/justifications",
+      "horizontalOverflow": false
+    },
+    {
+      "name": "13-admin-dashboard",
+      "url": "http://localhost:5173/admin",
+      "horizontalOverflow": false
+    },
+    {
+      "name": "14-admin-students",
+      "url": "http://localhost:5173/admin/students",
+      "horizontalOverflow": false
+    },
+    {
+      "name": "15-admin-stats",
+      "url": "http://localhost:5173/admin/stats",
+      "horizontalOverflow": false
+    },
+    {
+      "name": "16-mobile-login",
+      "url": "http://localhost:5173/login",
+      "horizontalOverflow": false
+    },
+    {
+      "name": "17-mobile-dashboard",
+      "url": "http://localhost:5173/student",
+      "horizontalOverflow": false
+    },
+    {
+      "name": "18-mobile-menu",
+      "url": "http://localhost:5173/student",
+      "horizontalOverflow": false
+    }
+  ],
+  "errors": [
+    {
+      "page": "teacher",
+      "type": "console",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+# Dépendances et artefacts
+frontend/node_modules/
+frontend/dist/
+backend/target/
+backend/data/
+backend/uploads/
+uploads/
+**/uploads/
+.m2/
+.npm-cache/
+.tmp/
+maven-settings.xml
+
+# Environnements et secrets
+.env
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+Thumbs.db
+.DS_Store

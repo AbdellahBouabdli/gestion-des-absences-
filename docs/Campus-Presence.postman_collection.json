@@ -1,0 +1,492 @@
+{
+  "info": {
+    "_postman_id": "7f8f7e42-7f2c-4f4b-9e4f-c4a4c0d6b513",
+    "name": "Campus Présence API",
+    "description": "Collection de tests et d'exploration de l'API de gestion des absences. Exécutez d'abord une connexion pour alimenter les jetons, puis les dossiers Enseignant, Étudiant ou Administration.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "teacherToken", "value": "" },
+    { "key": "studentToken", "value": "" },
+    { "key": "adminToken", "value": "" },
+    { "key": "absenceId", "value": "1" },
+    { "key": "justificationId", "value": "1" },
+    { "key": "studentId", "value": "4" },
+    { "key": "groupE2E", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Authentification",
+      "item": [
+        {
+          "name": "Connexion enseignant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.token) pm.collectionVariables.set('teacherToken', data.token);",
+                  "pm.test('Connexion réussie', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"teacher@univ.ma\",\n  \"password\": \"Teacher123!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] }
+          }
+        },
+        {
+          "name": "Connexion étudiant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.token) pm.collectionVariables.set('studentToken', data.token);",
+                  "pm.test('Connexion réussie', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@univ.ma\",\n  \"password\": \"Student123!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] }
+          }
+        },
+        {
+          "name": "Connexion administration",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.token) pm.collectionVariables.set('adminToken', data.token);",
+                  "pm.test('Connexion réussie', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@univ.ma\",\n  \"password\": \"Admin123!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] }
+          }
+        },
+        {
+          "name": "Profil connecté",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/me", "host": ["{{baseUrl}}"], "path": ["api", "auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Enseignant",
+      "item": [
+        {
+          "name": "Tableau de bord",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/teacher/dashboard", "host": ["{{baseUrl}}"], "path": ["api", "teacher", "dashboard"] }
+          }
+        },
+        {
+          "name": "Groupes",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/teacher/groups", "host": ["{{baseUrl}}"], "path": ["api", "teacher", "groups"] }
+          }
+        },
+        {
+          "name": "Étudiants",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/teacher/students?groupId=1&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teacher", "students"],
+              "query": [
+                { "key": "groupId", "value": "1" },
+                { "key": "search", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Emploi du temps",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/teacher/schedule?from=2026-11-02&to=2026-11-08",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teacher", "schedule"],
+              "query": [
+                { "key": "from", "value": "2026-11-02" },
+                { "key": "to", "value": "2026-11-08" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Historique des absences",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/teacher/absences", "host": ["{{baseUrl}}"], "path": ["api", "teacher", "absences"] }
+          }
+        },
+        {
+          "name": "Enregistrer une absence",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.id) pm.collectionVariables.set('absenceId', data.id);",
+                  "pm.test('Absence créée', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{teacherToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": 5,\n  \"sessionId\": 31,\n  \"note\": \"Absence relevée en début de séance.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/teacher/absences", "host": ["{{baseUrl}}"], "path": ["api", "teacher", "absences"] }
+          }
+        },
+        {
+          "name": "Modifier une absence",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{teacherToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Absence confirmée.\",\n  \"status\": \"ABSENT\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teacher/absences/{{absenceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teacher", "absences", "{{absenceId}}"]
+            }
+          }
+        },
+        {
+          "name": "Justifier une absence",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/teacher/absences/{{absenceId}}/justify",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teacher", "absences", "{{absenceId}}", "justify"]
+            }
+          }
+        },
+        {
+          "name": "Justificatifs en attente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (Array.isArray(data) && data[0]) pm.collectionVariables.set('justificationId', data[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/teacher/justifications?status=PENDING",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teacher", "justifications"],
+              "query": [{ "key": "status", "value": "PENDING" }]
+            }
+          }
+        },
+        {
+          "name": "Approuver un justificatif",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{teacherToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"APPROVED\",\n  \"comment\": \"Document conforme à la date de l'absence.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teacher/justifications/{{justificationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teacher", "justifications", "{{justificationId}}"]
+            }
+          }
+        },
+        {
+          "name": "Supprimer une absence",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{teacherToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/teacher/absences/{{absenceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teacher", "absences", "{{absenceId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Étudiant",
+      "item": [
+        {
+          "name": "Tableau de bord",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/student/dashboard", "host": ["{{baseUrl}}"], "path": ["api", "student", "dashboard"] }
+          }
+        },
+        {
+          "name": "Emploi du temps",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/student/schedule?from=2026-11-02&to=2026-11-08",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "student", "schedule"],
+              "query": [
+                { "key": "from", "value": "2026-11-02" },
+                { "key": "to", "value": "2026-11-08" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mes absences",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/student/absences", "host": ["{{baseUrl}}"], "path": ["api", "student", "absences"] }
+          }
+        },
+        {
+          "name": "Détail d'une absence",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/student/absences/{{absenceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "student", "absences", "{{absenceId}}"]
+            }
+          }
+        },
+        {
+          "name": "Mes justificatifs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/student/justifications", "host": ["{{baseUrl}}"], "path": ["api", "student", "justifications"] }
+          }
+        },
+        {
+          "name": "Déposer un justificatif",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "reason", "value": "Certificat médical pour la date concernée.", "type": "text" },
+                { "key": "file", "type": "file", "src": "" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/student/absences/{{absenceId}}/justification",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "student", "absences", "{{absenceId}}", "justification"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Administration",
+      "item": [
+        {
+          "name": "Tableau de bord",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/dashboard", "host": ["{{baseUrl}}"], "path": ["api", "admin", "dashboard"] }
+          }
+        },
+        {
+          "name": "Lister les étudiants",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/students", "host": ["{{baseUrl}}"], "path": ["api", "admin", "students"] }
+          }
+        },
+        {
+          "name": "Ajouter un étudiant",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Imane\",\n  \"lastName\": \"Testeur\",\n  \"email\": \"imane.test@univ.ma\",\n  \"password\": \"Student123!\",\n  \"groupId\": 1\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/admin/students", "host": ["{{baseUrl}}"], "path": ["api", "admin", "students"] }
+          }
+        },
+        {
+          "name": "Modifier un étudiant",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Imane\",\n  \"lastName\": \"Testeur\",\n  \"email\": \"imane.test@univ.ma\",\n  \"groupId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/students/{{studentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "students", "{{studentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Lister les enseignants",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/teachers", "host": ["{{baseUrl}}"], "path": ["api", "admin", "teachers"] }
+          }
+        },
+        {
+          "name": "Ajouter un enseignant",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Nawal\",\n  \"lastName\": \"Enseignante\",\n  \"email\": \"nawal.test@univ.ma\",\n  \"password\": \"Teacher123!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/admin/teachers", "host": ["{{baseUrl}}"], "path": ["api", "admin", "teachers"] }
+          }
+        },
+        {
+          "name": "Lister les groupes",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/groups", "host": ["{{baseUrl}}"], "path": ["api", "admin", "groups"] }
+          }
+        },
+        {
+          "name": "Créer un groupe",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.id) pm.collectionVariables.set('groupE2E', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"E2E-TEST\",\n  \"level\": \"1ère année\",\n  \"department\": \"Qualité logicielle\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/admin/groups", "host": ["{{baseUrl}}"], "path": ["api", "admin", "groups"] }
+          }
+        },
+        {
+          "name": "Modifier un groupe",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"E2E-TEST\",\n  \"level\": \"1ère année\",\n  \"department\": \"Génie logiciel\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/groups/{{groupE2E}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "groups", "{{groupE2E}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
